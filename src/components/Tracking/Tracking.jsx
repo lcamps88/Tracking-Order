@@ -17,16 +17,13 @@ const Tracking = () => {
   const [resultStatus, setResultStatus] = useState()
   const [order, setOrder] = useState([])
 
- const initialState = {values:''}
-  const[number, setNumber] = useState(initialState)
-
+  const [number, setNumber] = useState()
 
   const token =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9.eyJpYXQiOjE2MDM5MTYyMDAsImV4cCI6MTYzNTQ1MjIwMCwiYXVkIjoiaHR0cHM6Ly9icmluZ2VycGFyY2VsLmNvbSIsImlzcyI6ImZlYXRoZXJzIiwic3ViIjoiNTI1eXM2YWh4d3UyIiwianRpIjoiOGFiYWY3ZGQtYmQ0NS00NzcyLWJhMGQtNDBkMTMwMWI4NDY0In0.I0R5iJOLUASXmelc7dQ6pcEKstIPYwjTkcHvLu4IRk'
 
   const getTracking = async () => {
     try {
-     
       const config = {
         headers: {
           'Content-Type': 'application/json',
@@ -34,7 +31,7 @@ const Tracking = () => {
         },
       }
       const response = await axios.get(
-        'https://bps.bringer.dev/public/api/v2/get/parcel/tracking.json?tracking_number=BPS65O4WYLBWWBR',
+        `https://bps.bringer.dev/public/api/v2/get/parcel/tracking.json?tracking_number=${number}`,
         config
       )
       setResultTrack(response.data.parcel_tracking_items)
@@ -49,9 +46,12 @@ const Tracking = () => {
     getTracking()
   }, [])
 
+  const orderChangedHandler = (event) => {
+    setNumber(event.target.value)
+  }
 
-  const Search = (value) =>{
-    console.log("value", value);
+  const Search = (value) => {
+    console.log('value', value)
   }
   // ---
   return (
@@ -74,8 +74,7 @@ const Tracking = () => {
             <p>{order.external_tracking_number}</p>
           </Col>
         </Row>
-        
-       
+
         <Form
           style={{
             padding: '30px',
@@ -86,18 +85,23 @@ const Tracking = () => {
             alignItems: 'center',
             justifyContent: 'center',
           }}
-          onClick={Search(number)}
-          >
+          
+        >
           <Row>
             <Col>
-              <Form.Control placeholder="Enter your tracking number" type="text" name="number" value="Sample Text" />
+              <Form.Control
+                placeholder="Enter your tracking number"
+                type="text"
+                name="number"
+                value={number}
+                onChange={orderChangedHandler}
+              />
             </Col>
             <Col>
-              <Button variant="success">Search</Button>
+              <Button variant="success" onClick={() => getTracking()}>Search</Button>
             </Col>
           </Row>
         </Form>
-      
       </Container>
       <VerticalTimeline>
         <div
